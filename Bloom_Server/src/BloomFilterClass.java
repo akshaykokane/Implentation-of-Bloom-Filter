@@ -31,10 +31,8 @@ public class BloomFilterClass implements BloomFilterInterface {
 	public boolean isPresent(String str) throws RemoteException {
 		// TODO Auto-generated method stub
 		System.out.println(str);
-		if(bloomFilter[0] == 123)
-			return true;
 		
-		return false;
+		return true;
 	}
 
 	@Override
