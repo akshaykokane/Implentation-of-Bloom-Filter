@@ -1,18 +1,22 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 public class PerformanceAnalysis {
-
+	
 	public static void main(String[] args) throws NotBoundException, IOException {
 		// TODO Auto-generated method stub
 	
@@ -24,6 +28,7 @@ public class PerformanceAnalysis {
   	  int numberOfInputs = s.nextInt();
   	  ArrayList<String> inputSet = new ArrayList<>();
   	  ArrayList<String> testSet = new ArrayList<>();
+  	 
   
   	    
   	  choose(inputFile, inputSet, testSet, numberOfInputs);
@@ -38,8 +43,8 @@ public class PerformanceAnalysis {
        
       for(String str : inputSet)
       {
-    	  System.out.println(str);
-    	  System.out.println("added string " + count);
+   // 	  System.out.println(str);
+    //	  System.out.println("added string " + count);
     	  count++;;
     	  stub.add(str);
        
@@ -47,11 +52,15 @@ public class PerformanceAnalysis {
   	  System.out.println("Analysing by using testSet input : ");
   	  count = 0;
   	  float falsePositiveCount = 0;
+  		
+  		BufferedWriter writer = new BufferedWriter(new FileWriter("samplefile1.txt"));
+  		
+  		String fileContent="";
       for(String str : testSet)
       {
-    	  System.out.println(str);
-    	  System.out.println("getting string(Count)" + count);
-    	  
+    	  //System.out.println(str);
+    	 // System.out.println("getting string(Count)" + count);
+    	  fileContent +="\n"+ str;
     	  if(stub.isPresent(str)) {
     		  falsePositiveCount++;
     
@@ -61,7 +70,17 @@ public class PerformanceAnalysis {
     	  count++;
        
   	  }
-  	  
+      writer.write(fileContent);
+      writer.close();
+      int dupCount = 0;
+      for(String str: inputSet) {
+    	  for(String str2 : testSet) {
+    		  if(str.equals(str2) || str==str2)
+    			  dupCount++;
+    			  
+    	  }
+      }
+  	  System.out.println("DupCount is" +dupCount);
       System.out.println("False Positive Count : " + falsePositiveCount);
       System.out.println("False Positive Rate Report: \n When number of input " + numberOfInputs);
       float falsPositiveRate = (falsePositiveCount/numberOfInputs) * 100;
@@ -76,9 +95,9 @@ public class PerformanceAnalysis {
 	  {
 		 //generate random line number for file
 	     Random rand = new Random();
-	     ArrayList<Integer> randomLineNumbers = new ArrayList<Integer>();
+	     Set randomLineNumbers = new HashSet<Integer>();
 	     
-	     for(int i = 0; i < numberOfInputs * 2; i++) {
+	     while(randomLineNumbers.size() != (numberOfInputs * 2)) {
 	    	 int randomLine = Math.abs(rand.nextInt()) % 60000;
 	    	 randomLineNumbers.add(randomLine);
 	    //	 System.out.println(randomLine);

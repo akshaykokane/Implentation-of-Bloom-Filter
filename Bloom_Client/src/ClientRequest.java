@@ -10,7 +10,6 @@ public class ClientRequest {
 
     public static void main(String[] args) {
     	Scanner s = new Scanner(System.in);
-        String host = (args.length < 1) ? null : args[0];
         try {
         	Registry registry = LocateRegistry.getRegistry(8080);
             BloomFilterInterface stub = (BloomFilterInterface) registry.lookup("bloomfilter");
