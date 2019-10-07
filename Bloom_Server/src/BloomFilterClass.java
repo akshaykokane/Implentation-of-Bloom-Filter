@@ -76,6 +76,7 @@ public class BloomFilterClass implements BloomFilterInterface {
 	@Override
 	public void reset() throws RemoteException {
 		// TODO Auto-generated method stub
+		System.out.println("resetting...");
 		for(int i = 0; i < sizeOfBloomFilter; i++)
 			bloomFilter[i] = 0;
 		

@@ -40,54 +40,64 @@ public class PerformanceAnalysis {
   	  int count = 0;
   	  Registry registry = LocateRegistry.getRegistry(8080);
       BloomFilterInterface stub = (BloomFilterInterface) registry.lookup("bloomfilter");
-       
-      for(String str : inputSet)
-      {
-   // 	  System.out.println(str);
-    //	  System.out.println("added string " + count);
-    	  count++;;
-    	  stub.add(str);
-       
-  	  }
-  	  System.out.println("Analysing by using testSet input : ");
-  	  count = 0;
-  	  float falsePositiveCount = 0;
-  		
-  		BufferedWriter writer = new BufferedWriter(new FileWriter("samplefile1.txt"));
-  		
-  		String fileContent="";
-      for(String str : testSet)
-      {
-    	  //System.out.println(str);
-    	 // System.out.println("getting string(Count)" + count);
-    	  fileContent +="\n"+ str;
-    	  if(stub.isPresent(str)) {
-    		  falsePositiveCount++;
-    
-    	  }
-    		  
-    	  
-    	  count++;
-       
-  	  }
-      writer.write(fileContent);
-      writer.close();
-      int dupCount = 0;
-      for(String str: inputSet) {
-    	  for(String str2 : testSet) {
-    		  if(str.equals(str2) || str==str2)
-    			  dupCount++;
-    			  
-    	  }
-      }
-  	  System.out.println("DupCount is" +dupCount);
-      System.out.println("False Positive Count : " + falsePositiveCount);
-      System.out.println("False Positive Rate Report: \n When number of input " + numberOfInputs);
-      float falsPositiveRate = (falsePositiveCount/numberOfInputs) * 100;
-      System.out.println("False Positive Rate is : " +falsPositiveRate + "% ");
-      
-  	  
+      float prevFPRate = 0;
+      float falsPositiveRate  = 100;
+      while(true) {
+    	  if(Math.abs(prevFPRate - falsPositiveRate) < 3)
+    		  break;
+    	  stub.reset();
+    	  for(String str : inputSet)
+          {
+       // 	  System.out.println(str);
+        //	  System.out.println("added string " + count);
+        	  count++;;
+        	  stub.add(str);
+           
+      	  }
+      	  System.out.println("Analysing by using testSet input : ");
+      	  count = 0;
+      	  float falsePositiveCount = 0;
+      		
+      		BufferedWriter writer = new BufferedWriter(new FileWriter("samplefile1.txt"));
+      		
+      		String fileContent="";
+          for(String str : testSet)
+          {
+        	  //System.out.println(str);
+        	 // System.out.println("getting string(Count)" + count);
+        	  fileContent +="\n"+ str;
+        	  if(stub.isPresent(str)) {
+        		  falsePositiveCount++;
+        
+        	  }
+        		  
+        	  
+        	  count++;
+           
+      	  }
+          writer.write(fileContent);
+          writer.close();
+          int dupCount = 0;
+          for(String str: inputSet) {
+        	  for(String str2 : testSet) {
+        		  if(str.equals(str2) || str==str2)
+        			  dupCount++;
+        			  
+        	  }
+          }
+      	  System.out.println("Size of inputSet is" +inputSet.size());
+      	  System.out.println("Size of testSet is" +testSet.size());
+          System.out.println("False Positive Count : " + falsePositiveCount);
+          System.out.println("False Positive Rate Report: \n When number of input " + numberOfInputs);
+          prevFPRate = falsPositiveRate;
+          falsPositiveRate = (falsePositiveCount/testSet.size());
+          System.out.println("False Positive Rate is : " +falsPositiveRate + "% ");
+          
+      	  
 
+    	  
+      }
+      
 
 	}
 	
@@ -97,7 +107,7 @@ public class PerformanceAnalysis {
 	     Random rand = new Random();
 	     Set randomLineNumbers = new HashSet<Integer>();
 	     
-	     while(randomLineNumbers.size() != (numberOfInputs * 2)) {
+	     while(randomLineNumbers.size() != (numberOfInputs)) {
 	    	 int randomLine = Math.abs(rand.nextInt()) % 60000;
 	    	 randomLineNumbers.add(randomLine);
 	    //	 System.out.println(randomLine);
@@ -111,13 +121,12 @@ public class PerformanceAnalysis {
 	     while ((st = br.readLine()) != null) { 
 	    	 currentLineNumber++;
 	    	 if(randomLineNumbers.contains(currentLineNumber)) {
-	    		if(toggle)
-	    		 inputSet.add(st);	 
-	    		else
+	    		if(inputSet.size() != numberOfInputs)
+	    			inputSet.add(st);	 	
+	    	}
+	    	 else
 	    		  testSet.add(st);	
 	    		
-	    		toggle = !toggle;
-	    	}
 	    	 	 
 	     } 
 	
