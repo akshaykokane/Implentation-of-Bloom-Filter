@@ -50,6 +50,7 @@ public class BloomFilterClass implements BloomFilterInterface {
 		}
 		
 		System.out.println("Sending response to client..");
+		System.out.println("Number of bits set : " + numberOfBitSet());
 		return ans;
 	}
 
@@ -87,6 +88,16 @@ public class BloomFilterClass implements BloomFilterInterface {
 	public boolean getBit(int val) {
 		
 		return bloomFilter[val] == 1? true : false;
+	}
+	
+	public int numberOfBitSet() {
+		int c = 0;
+		for(int i = 0; i < sizeOfBloomFilter; i++) {
+			if(bloomFilter[i] == 1)
+				c++;
+		}
+		return c;
+		
 	}
 
 }
